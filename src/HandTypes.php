@@ -19,9 +19,9 @@ class HandTypes
     {
         $royal = array('10', 'J', 'Q', 'K', 'A');
         $count_equals = count(array_intersect($royal, $format_hand_number));
-        $counts_suits = count(array_unique($format_hand_suit));
+        $isFlush = $this->isFlush($format_hand_suit);
 
-        if ($count_equals == 5 && $counts_suits == 1) {
+        if ($count_equals == 5 && $isFlush == true) {
             return true;
         }
         return false;
@@ -47,15 +47,60 @@ class HandTypes
 
         sort($format_hand_number_new);
         $isStraight = $this->isStraight($format_hand_number_new);
+        $isFlush = $this->isFlush($format_hand_suit);
 
-        $counts_suits = count(array_unique($format_hand_suit));
-
-        if ($isStraight == true && $counts_suits == 1) {
+        if ($isStraight == true && $isFlush == true) {
             return true;
         }
 
         return false;
 
+    }
+
+
+    public function isFourPair($hand_numbers)
+    {
+        $tmp = array_count_values($hand_numbers);
+        $isFourPair = false;
+        foreach ($tmp as $t) {
+            if ($t == 4) {
+                $isFourPair = true;
+            }
+        }
+
+        return $isFourPair;
+    }
+
+
+    public function isFullHouse($hand_numbers)
+    {
+
+        $hand_numbers_count = count(array_unique($hand_numbers));
+
+        $isFullHouse = false;
+        if ($hand_numbers_count == 2) {
+            $tmp = array_count_values($hand_numbers);
+            foreach ($tmp as $t) {
+                if ($t == 3) {
+                    $isFullHouse = true;
+                }
+            }
+        }
+
+        return $isFullHouse;
+    }
+
+
+    public function isFlush($format_hand_suit)
+    {
+        $counts_suits = count(array_unique($format_hand_suit));
+
+        $isFlush = false;
+        if ($counts_suits == 1) {
+            $isFlush = true;
+        }
+
+        return $isFlush;
     }
 
 
@@ -74,29 +119,49 @@ class HandTypes
         return $isStraight;
     }
 
-    public function isFourPair($hand_numbers) {
-        //work to do here
-        $hand_numbers_unique = array_unique($hand_numbers);
-        var_dump($hand_numbers_unique);
-        if (isset($hand_numbers_unique[4])){
-            var_dump($hand_numbers_unique);
+    public function isThreePair($hand_numbers)
+    {
 
+        //to do
+        $tmp = array_count_values($hand_numbers);
+        $isThreePair = false;
+        foreach ($tmp as $t) {
+            if ($t == 3) {
+                $isThreePair = true;
+            }
         }
-        return "ok";
-        die();
+
+        return $isThreePair;
     }
 
 
-    public function isFullHouse($hand_numbers) {
-
-        $hand_numbers_count = count(array_unique($hand_numbers));
-
-        $isFullHouse = false;
-        if($hand_numbers_count == 2) {
-            $isFullHouse = true;
+    public function isTwoPair($hand_numbers)
+    {
+        //to do
+        $tmp = array_count_values($hand_numbers);
+        $isTwoPair = false;
+        foreach ($tmp as $t) {
+            if ($t == 3) {
+                $isTwoPair = true;
+            }
         }
 
-        return $isFullHouse;
+        return $isTwoPair;
+    }
+
+
+    public function isPair($hand_numbers)
+    {
+        //to do
+        $tmp = array_count_values($hand_numbers);
+        $isPair = false;
+        foreach ($tmp as $t) {
+            if ($t == 3) {
+                $isPair = true;
+            }
+        }
+
+        return $isPair;
     }
 
 }
