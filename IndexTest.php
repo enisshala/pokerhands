@@ -16,14 +16,10 @@ class IndexTest
         foreach ($hands_array as $hand) {
             $poker = new PokerClass();
             $hand_strength = $poker->checkStrength($hand);
+            var_dump($hand_strength);
+            die();
         }
 
     }
 
-    public function checkStrength($hand)
-    {
-//        var_dump();
-        var_dump($hand);
-        die();
-    }
 }

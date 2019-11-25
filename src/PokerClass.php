@@ -15,26 +15,33 @@ class PokerClass
 
     public function checkStrength($hand)
     {
-//        var_dump($hand);
         $hand_array = explode(" ", $hand);
-        $format_hand = array();
+//        var_dump($hand_array);
+        $format_hand_number = array();
+        $format_hand_suit = array();
         foreach ($hand_array as $hand) {
-            $format = str_replace("\"","", json_encode($hand));
-            $format_hand[] = str_replace("\r","", $format);
-
+            $format = str_replace("\"", "", json_encode($hand));
+            $formatted = str_replace("\\r", "", $format);
+            $format_hand_number[] = explode("\\", $formatted, 2)[0];
+            $format_hand_suit[] = explode("\\", $formatted, 2)[1];
         }
-        var_dump(str_replace("\\r","", $format_hand[4]));
-        die();
 
-
-        foreach ($hand as $card) {
-//            var_dump($card);
-        }
+//        var_dump($format_hand_suit);
 //        die();
-//        $hand = json_encode($hand[0]);
-//        var_dump($hand[4]);
+
+        $handType = new HandTypes();
+        $isRoyalFlush = $handType->isRoyalFlush($format_hand_number, $format_hand_suit);
+        $isStraightFlush = $handType->isStraightFlush($format_hand_number, $format_hand_suit);
+        $isFourPair = $handType->isFourPair($format_hand_number);
+
+        if ($isRoyalFlush) {
+
+        } elseif ($isStraightFlush) {
+
+        } else if ($isFourPair)
 
 
-        die();
+        return $isFourPair;
+
     }
 }
