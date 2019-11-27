@@ -35,6 +35,10 @@ class PokerClass
         $isFourPair = $handType->isFourPair($format_hand_number);
         $isFullHouse = $handType->isFullHouse($format_hand_number);
         $isFlush = $handType->isFlush($format_hand_suit);
+        $isThreePair = $handType->isThreePair($format_hand_number);
+        $isTwoPair = $handType->isTwoPair($format_hand_number);
+        $isPair = $handType->isPair($format_hand_number);
+        $isHighCard = $handType->isHighCard($format_hand_number);
 
         if ($isRoyalFlush) {
 
@@ -46,9 +50,17 @@ class PokerClass
 
         } else if ($isFlush) {
 
+        } else if ($isThreePair) {
+
+        } else if ($isTwoPair) {
+
+        } else if ($isPair) {
+
+        } else if ($isHighCard) {
+
         }
 
-        return $isFlush;
+        return $isHighCard;
 
     }
 }

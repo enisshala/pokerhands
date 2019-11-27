@@ -121,13 +121,14 @@ class HandTypes
 
     public function isThreePair($hand_numbers)
     {
-
-        //to do
         $tmp = array_count_values($hand_numbers);
+
         $isThreePair = false;
-        foreach ($tmp as $t) {
-            if ($t == 3) {
-                $isThreePair = true;
+        if (count($tmp) == 3) {
+            foreach ($tmp as $t) {
+                if ($t == 3) {
+                    $isThreePair = true;
+                }
             }
         }
 
@@ -137,12 +138,14 @@ class HandTypes
 
     public function isTwoPair($hand_numbers)
     {
-        //to do
         $tmp = array_count_values($hand_numbers);
+
         $isTwoPair = false;
-        foreach ($tmp as $t) {
-            if ($t == 3) {
-                $isTwoPair = true;
+        if (count($tmp) <= 3) {
+            foreach ($tmp as $t) {
+                if ($t <= 2) {
+                    $isTwoPair = true;
+                }
             }
         }
 
@@ -152,16 +155,41 @@ class HandTypes
 
     public function isPair($hand_numbers)
     {
-        //to do
         $tmp = array_count_values($hand_numbers);
+
         $isPair = false;
-        foreach ($tmp as $t) {
-            if ($t == 3) {
-                $isPair = true;
+        if (count($tmp) < 5) {
+            foreach ($tmp as $t) {
+                if ($t == 2) {
+                    $isPair = true;
+                }
             }
         }
 
         return $isPair;
+    }
+
+
+    public function isHighCard($hand_numbers)
+    {
+        $formatted_hands = array();
+        foreach ($hand_numbers as $hand) {
+            if ($hand == "A") {
+                $formatted_hands[] = '14';
+            } elseif ($hand == "K") {
+                $formatted_hands[] = '13';
+            } elseif ($hand == "Q") {
+                $formatted_hands[] = '12';
+            } elseif ($hand == "J") {
+                $formatted_hands[] = '11';
+            } else {
+                $formatted_hands[] = $hand;
+            }
+        }
+        rsort($formatted_hands);
+
+        return $formatted_hands[0];
+
     }
 
 }
