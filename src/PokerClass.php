@@ -17,28 +17,39 @@ class PokerClass
     public function sortHands($hand_file)
     {
         $hands_array = $this->getDataURL($hand_file);
-
+        //some shit to do around here - tired af - going to sleep
         $ranked_array = array();
         foreach ($hands_array as $hand) {
             $poker = new PokerClass();
             $hand_strength = $poker->checkStrength($hand);
 //            var_dump($hand_strength);
-            array_push($ranked_array,
-                    $hand,
-                    $hand_strength
+//            array_push($ranked_array,
+//                    $hand,
+//                    $hand_strength
+//
+//            );
 
-            );
-
-//            $ranked_array[$hand_strength] = $hand;
+            $ranked_array[$hand] = $hand_strength;
         }
 //        die();
 
-        var_dump($ranked_array);
+//        var_dump($ranked_array);
 
-        ksort($ranked_array);
-        var_dump($ranked_array);
-        foreach ($ranked_array as $item) {
-            var_dump($item);
+        asort($ranked_array);
+//        var_dump($ranked_array);
+        $repeated = array_count_values($ranked_array);
+//        var_dump($repeated);
+
+        foreach ($repeated as $item => $id) {
+            if ($id > 1){
+                var_dump($item);
+                foreach ($ranked_array as $arr => $idnew) {
+                    if ($idnew == $item) {
+                        var_dump($arr);
+
+                    }
+                }
+            }
         }
 
     }
