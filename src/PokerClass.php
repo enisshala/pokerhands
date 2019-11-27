@@ -2,6 +2,8 @@
 
 namespace enisshala\pokerhands;
 
+use enisshala\pokerhands\HandTypes;
+
 class PokerClass
 {
 
@@ -12,11 +14,48 @@ class PokerClass
     {
     }
 
+    public function sortHands($hand_file)
+    {
+        $hands_array = $this->getDataURL($hand_file);
+
+        $ranked_array = array();
+        foreach ($hands_array as $hand) {
+            $poker = new PokerClass();
+            $hand_strength = $poker->checkStrength($hand);
+//            var_dump($hand_strength);
+            array_push($ranked_array,
+                    $hand,
+                    $hand_strength
+
+            );
+
+//            $ranked_array[$hand_strength] = $hand;
+        }
+//        die();
+
+        var_dump($ranked_array);
+
+        ksort($ranked_array);
+        var_dump($ranked_array);
+        foreach ($ranked_array as $item) {
+            var_dump($item);
+        }
+
+    }
+
+
+    public function getDataURL($file_path)
+    {
+        $file_hands = file_get_contents($file_path);
+        $hands_array = explode("\n", $file_hands);
+
+        return $hands_array;
+    }
+
 
     public function checkStrength($hand)
     {
         $hand_array = explode(" ", $hand);
-//        var_dump($hand_array);
         $format_hand_number = array();
         $format_hand_suit = array();
         foreach ($hand_array as $hand) {
@@ -26,41 +65,46 @@ class PokerClass
             $format_hand_suit[] = explode("\\", $formatted, 2)[1];
         }
 
-//        var_dump($format_hand_suit);
-//        die();
-
         $handType = new HandTypes();
-        $isRoyalFlush = $handType->isRoyalFlush($format_hand_number, $format_hand_suit);
-        $isStraightFlush = $handType->isStraightFlush($format_hand_number, $format_hand_suit);
-        $isFourPair = $handType->isFourPair($format_hand_number);
-        $isFullHouse = $handType->isFullHouse($format_hand_number);
+        $isStraight = $handType->isStraight($format_hand_number);
         $isFlush = $handType->isFlush($format_hand_suit);
-        $isThreePair = $handType->isThreePair($format_hand_number);
-        $isTwoPair = $handType->isTwoPair($format_hand_number);
         $isPair = $handType->isPair($format_hand_number);
-        $isHighCard = $handType->isHighCard($format_hand_number);
+        $isTwoPair = $handType->isTwoPair($format_hand_number);
+        $isThreePair = $handType->isThreePair($format_hand_number);
+        $isFullHouse = $handType->isFullHouse($format_hand_number);
+        $isFourPair = $handType->isFourPair($format_hand_number);
 
-        if ($isRoyalFlush) {
+        if ($isFourPair == true) {
+            return 3;
+        } elseif ($isThreePair == true) {
+            return 7;
+        } elseif ($isFullHouse == true) {
+            return 4;
+        } elseif ($isTwoPair == true) {
+            return 8;
+        } elseif ($isPair == true) {
+            return 9;
 
-        } elseif ($isStraightFlush) {
+        } elseif ($isStraight == true) {
+            $isStraightFlush = $handType->isStraightFlush($format_hand_number, $format_hand_suit);
+            if ($isStraightFlush == true) {
+                $isRoyalFlush = $handType->isRoyalFlush($format_hand_number, $format_hand_suit);
+                if ($isRoyalFlush == true) {
+                    return 1;
+                } else {
+                    return 2;
+                }
 
-        } else if ($isFourPair) {
+            } else {
+                return 6;
+            }
 
-        } else if ($isFullHouse) {
-
-        } else if ($isFlush) {
-
-        } else if ($isThreePair) {
-
-        } else if ($isTwoPair) {
-
-        } else if ($isPair) {
-
-        } else if ($isHighCard) {
-
+        } elseif ($isFlush == true) {
+            return 5;
+        } else {
+//            $isHighCard = $handType->isHighCard($format_hand_number);
+            return 10;
         }
-
-        return $isHighCard;
 
     }
 }

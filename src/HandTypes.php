@@ -11,7 +11,6 @@ class HandTypes
     public function __construct()
     {
 
-
     }
 
 
@@ -30,23 +29,7 @@ class HandTypes
 
     public function isStraightFlush($format_hand_number, $format_hand_suit)
     {
-        $format_hand_number_new = array();
-        foreach ($format_hand_number as $number) {
-            if ($number == 'J') {
-                $format_hand_number_new[] = '11';
-            } elseif ($number == 'Q') {
-                $format_hand_number_new[] = '12';
-            } elseif ($number == 'K') {
-                $format_hand_number_new[] = '13';
-            } elseif ($number == 'A') {
-                $format_hand_number_new[] = '14';
-            } else {
-                $format_hand_number_new[] = $number;
-            }
-        }
-
-        sort($format_hand_number_new);
-        $isStraight = $this->isStraight($format_hand_number_new);
+        $isStraight = $this->isStraight($format_hand_number);
         $isFlush = $this->isFlush($format_hand_suit);
 
         if ($isStraight == true && $isFlush == true) {
@@ -104,27 +87,52 @@ class HandTypes
     }
 
 
-    public function isStraight($format_hand_number_new)
+    public function isStraight($format_hand_number)
     {
-        $isStraight = false;
-        for ($i = 0; $i < 4; $i++) {
-            if ($format_hand_number_new[$i] == $format_hand_number_new[$i + 1] - 1) {
-                $isStraight = true;
+        $format_hand_number_straight = array();
+        foreach ($format_hand_number as $number) {
+            if ($number == 'J') {
+                $format_hand_number_straight[] = '11';
+            } elseif ($number == 'Q') {
+                $format_hand_number_straight[] = '12';
+            } elseif ($number == 'K') {
+                $format_hand_number_straight[] = '13';
+            } elseif ($number == 'A') {
+                $format_hand_number_straight[] = '14';
             } else {
-                $isStraight = false;
-                break;
+                $format_hand_number_straight[] = $number;
+            }
+        }
+
+        sort($format_hand_number_straight);
+
+        $lowestStraight = array('14', '2', '3', '4', '5');
+        $count_equals = count(array_intersect($lowestStraight, $format_hand_number));
+
+        if ($count_equals == 5){
+            $isStraight = true;
+        } else {
+            $isStraight = false;
+            for ($i = 0; $i < 4; $i++) {
+                if ($format_hand_number_straight[$i] == $format_hand_number_straight[$i + 1] - 1) {
+                    $isStraight = true;
+                } else {
+                    $isStraight = false;
+                    break;
+                }
             }
         }
 
         return $isStraight;
     }
 
+
     public function isThreePair($hand_numbers)
     {
         $tmp = array_count_values($hand_numbers);
 
         $isThreePair = false;
-        if (count($tmp) == 3) {
+        if ((count($tmp) == 3)) {
             foreach ($tmp as $t) {
                 if ($t == 3) {
                     $isThreePair = true;
@@ -156,6 +164,9 @@ class HandTypes
     public function isPair($hand_numbers)
     {
         $tmp = array_count_values($hand_numbers);
+
+//        var_dump(count($tmp));
+//        die();
 
         $isPair = false;
         if (count($tmp) < 5) {

@@ -10,15 +10,11 @@ class IndexTest
     public function test($file_path)
     {
 
-        $file_hands = file_get_contents($file_path);
-        $hands_array = explode("\n", $file_hands);
+        $hands = new PokerClass();
+        $sorted_hands = $hands->sortHands($file_path);
 
-        foreach ($hands_array as $hand) {
-            $poker = new PokerClass();
-            $hand_strength = $poker->checkStrength($hand);
-            var_dump($hand_strength);
-            die();
-        }
+
+        var_dump($sorted_hands);
 
     }
 
