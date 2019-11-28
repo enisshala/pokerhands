@@ -44,14 +44,31 @@ class HandTypes
     public function isFourPair($hand_numbers)
     {
         $tmp = array_count_values($hand_numbers);
-        $isFourPair = false;
-        foreach ($tmp as $t) {
-            if ($t == 4) {
-                $isFourPair = true;
+        $isFourPair = array(
+            'status' => false,
+            'high_card' => null
+        );
+        foreach ($tmp as $key => $value) {
+            if ($value == 4) {
+                if ($key == 'J') {
+                    $highest = 11;
+                } elseif ($key == 'Q') {
+                    $highest = 12;
+                } elseif ($key == 'K') {
+                    $highest = 13;
+                } elseif ($key == 'A') {
+                    $highest = 14;
+                } else {
+                    $highest = (int)$key;
+                }
+                $isFourPair = array(
+                    'status' => true,
+                    'high_card' => $highest
+                );
             }
         }
 
-        return $isFourPair;
+        return json_encode($isFourPair);
     }
 
 
@@ -60,17 +77,34 @@ class HandTypes
 
         $hand_numbers_count = count(array_unique($hand_numbers));
 
-        $isFullHouse = false;
+        $isFullHouse = array(
+            'status' => false,
+            'high_card' => null
+        );
         if ($hand_numbers_count == 2) {
             $tmp = array_count_values($hand_numbers);
-            foreach ($tmp as $t) {
-                if ($t == 3) {
-                    $isFullHouse = true;
+            foreach ($tmp as $key => $value) {
+                if ($value == 3) {
+                    if ($key == 'J') {
+                        $highest = 11;
+                    } elseif ($key == 'Q') {
+                        $highest = 12;
+                    } elseif ($key == 'K') {
+                        $highest = 13;
+                    } elseif ($key == 'A') {
+                        $highest = 14;
+                    } else {
+                        $highest = (int)$key;
+                    }
+                    $isFullHouse = array(
+                        'status' => true,
+                        'high_card' => $highest
+                    );
                 }
             }
         }
 
-        return $isFullHouse;
+        return json_encode($isFullHouse);
     }
 
 
@@ -131,16 +165,33 @@ class HandTypes
     {
         $tmp = array_count_values($hand_numbers);
 
-        $isThreePair = false;
+        $isThreePair = array(
+            'status' => false,
+            'high_card' => null
+        );
         if ((count($tmp) == 3)) {
-            foreach ($tmp as $t) {
-                if ($t == 3) {
-                    $isThreePair = true;
+            foreach ($tmp as $key => $value) {
+                if ($value == 3) {
+                    if ($key == 'J') {
+                        $highest = 11;
+                    } elseif ($key == 'Q') {
+                        $highest = 12;
+                    } elseif ($key == 'K') {
+                        $highest = 13;
+                    } elseif ($key == 'A') {
+                        $highest = 14;
+                    } else {
+                        $highest = (int)$key;
+                    }
+                    $isThreePair = array(
+                        'status' => true,
+                        'high_card' => $highest
+                    );
                 }
             }
         }
 
-        return $isThreePair;
+        return json_encode($isThreePair);
     }
 
 
@@ -148,16 +199,36 @@ class HandTypes
     {
         $tmp = array_count_values($hand_numbers);
 
-        $isTwoPair = false;
+        $isTwoPair = array(
+            'status' => false,
+            'high_card' => null
+        );
         if (count($tmp) <= 3) {
-            foreach ($tmp as $t) {
-                if ($t <= 2) {
-                    $isTwoPair = true;
+            $pairValues = array();
+            foreach ($tmp as $key => $value) {
+                if ($value == 2) {
+                    if ($key == 'J') {
+                        $highest = 11;
+                    } elseif ($key == 'Q') {
+                        $highest = 12;
+                    } elseif ($key == 'K') {
+                        $highest = 13;
+                    } elseif ($key == 'A') {
+                        $highest = 14;
+                    } else {
+                        $highest = (int)$key;
+                    }
+                    $pairValues[] = $highest;
+
                 }
             }
+            $isTwoPair = array(
+                'status' => true,
+                'high_card' => max($pairValues)
+            );
         }
 
-        return $isTwoPair;
+        return json_encode($isTwoPair);
     }
 
 
@@ -201,6 +272,12 @@ class HandTypes
 
         return $formatted_hands[0];
 
+    }
+
+    public function isHighestFour($hand1, $hand2){
+        var_dump($hand1);
+        var_dump($hand2);
+//        return $hand1;
     }
 
 }
