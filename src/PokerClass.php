@@ -21,47 +21,63 @@ class PokerClass
         $i = 0;
         foreach ($hands_array as $hand) {
             $poker = new PokerClass();
-            $hand_strength = json_decode($poker->checkStrength($hand));
-            var_dump($hand_strength);
-            die();
+            $hand_strength = $poker->checkStrength($hand);
             array_push($ranked_array,
                 array(
                     'id' => $i,
                     'hand' => $hand,
-                    'hand_strength' => $hand_strength
+                    'hand_strength' => (float)$hand_strength
                 )
             );
             $i++;
         }
 
-        //sort based on strength parameter in array
-        usort($ranked_array, function ($a, $b) {
-            return $a['hand_strength'] <=> $b['hand_strength'];
-        });
-
-
-        $total = count($ranked_array);
-        for ($i = 0; $i < $total - 1; $i++) {
-            if ($ranked_array[$i]['hand_strength'] == $ranked_array[$i + 1]['hand_strength']) {
-                $handType = new HandTypes();
-
-                if ($ranked_array[$i]['hand_strength'] = 3) {
-                    $isHigher = $handType->isHighestFour($ranked_array[$i], $ranked_array[$i + 1]);
-                    var_dump($isHigher);
-                    die();
-                } elseif ($ranked_array[$i]['hand_strength'] = 4) {
-                    return "ok";
-                } else {
-                    return "okok";
-                }
-
-//                var_dump($ranked_array[$i]);
-//                var_dump($ranked_array[$i + 1]);
-//                die();
-            }
-
+        $strengths = array();
+        foreach ($ranked_array as $item) {
+            $strengths[] = $item['hand_strength'];
         }
 
+        $count_hands = array_count_values($strengths);
+
+        $same_level_hands = array();
+        foreach ($count_hands as $key => $value) {
+            if ($value > 1) {
+                $same_level_hands[] = $key;
+            }
+        }
+
+        foreach ($ranked_array as $item => $value) {
+            if (in_array($value['hand_strength'], $same_level_hands)) {
+                $hand = new HandTypes();
+                switch ($value['hand_strength']) {
+                    case 3:
+                        $precise_rank = $hand->isHighestFour($value);
+                        $ranked_array[$item]['hand_strength'] = 3 + ($precise_rank/100);
+                        break;
+                    case 8:
+                        $precise_rank = $hand->isHighestTwoPair($value);
+                        var_dump($precise_rank);
+//                        die();
+                        break;
+
+                    default:
+                        continue;
+                }
+
+
+            }
+        }
+
+
+        //sort based on strength parameter in array
+        usort($ranked_array, function ($a, $b) {
+            return $a['hand_strength'] > $b['hand_strength'] ? 1 : -1;
+        });
+
+//        var_dump($same_level_hands);
+        var_dump($ranked_array);
+
+        die();
 
     }
 
@@ -86,50 +102,24 @@ class PokerClass
             $format_hand_number[] = explode("\\", $formatted, 2)[0];
             $format_hand_suit[] = explode("\\", $formatted, 2)[1];
         }
-
         $handType = new HandTypes();
         $isStraight = $handType->isStraight($format_hand_number);
         $isFlush = $handType->isFlush($format_hand_suit);
         $isPair = $handType->isPair($format_hand_number);
-        $isTwoPair = json_decode($handType->isTwoPair($format_hand_number));
-        $isThreePair = json_decode($handType->isThreePair($format_hand_number));
-        $isFullHouse = json_decode($handType->isFullHouse($format_hand_number));
-        $isFourPair = json_decode($handType->isFourPair($format_hand_number));
-
-
-        var_dump($isTwoPair);
-        die();
-
-        if ($isFourPair->status == true) {
-            $isFourPairStrength = array(
-                'strength' => 3,
-                'high_card' => $isFourPair->high_card
-            );
-            return json_encode($isFourPairStrength);
-
-        } elseif ($isThreePair->status == true) {
-            $isThreePairStrength = array(
-                'strength' => 7,
-                'high_card' => $isThreePair->high_card
-            );
-            return json_encode($isThreePairStrength);
-
-        } elseif ($isFullHouse->status == true) {
-            $isFullHouseStrength = array(
-                'strength' => 4,
-                'high_card' => $isFullHouse->high_card
-            );
-            return json_encode($isFullHouseStrength);
-
-        } elseif ($isTwoPair->status == true) {
-            $isTwoPairStrength = array(
-                'strength' => 8,
-                'high_card' => $isTwoPair->high_card
-            );
-            return json_encode($isTwoPairStrength);
+        $isTwoPair = $handType->isTwoPair($format_hand_number);
+        $isThreePair = $handType->isThreePair($format_hand_number);
+        $isFullHouse = $handType->isFullHouse($format_hand_number);
+        $isFourPair = $handType->isFourPair($format_hand_number);
+        if ($isFourPair == true) {
+            return 3;
+        } elseif ($isThreePair == true) {
+            return 7;
+        } elseif ($isFullHouse == true) {
+            return 4;
+        } elseif ($isTwoPair == true) {
+            return 8;
         } elseif ($isPair == true) {
             return 9;
-
         } elseif ($isStraight == true) {
             $isStraightFlush = $handType->isStraightFlush($format_hand_number, $format_hand_suit);
             if ($isStraightFlush == true) {
@@ -139,17 +129,14 @@ class PokerClass
                 } else {
                     return 2;
                 }
-
             } else {
                 return 6;
             }
-
         } elseif ($isFlush == true) {
             return 5;
         } else {
 //            $isHighCard = $handType->isHighCard($format_hand_number);
             return 10;
         }
-
     }
 }

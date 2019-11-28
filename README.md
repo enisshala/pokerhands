@@ -20,6 +20,12 @@ $hands = new enisshala\PokerClass();
 echo $hands->sortHands($hands_file);
 ```
 
+## Testing with CLI
+in the root folder of the package there is IndexTest.php, you can run it in terminal with following command
+``` php
+php -r "include 'IndexTest.php'; IndexTest::test('https://pastebin.com/raw/FXneUYCc');"
+```
+
 ## Contributing
 
 Please see [CONTRIBUTING](https://github.com/thephpleague/:package_name/blob/master/CONTRIBUTING.md) for details.
