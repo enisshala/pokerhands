@@ -41,13 +41,18 @@ class HandTypes
     }
 
 
-    public function isFourPair($hand_numbers)
+    public function isFourPair($hand_numbers, $format_hand_suit)
     {
-        $tmp = array_count_values($hand_numbers);
-        $isFourPair = false;
-        foreach ($tmp as $t) {
-            if ($t == 4) {
-                $isFourPair = true;
+        $isFlush = $this->isFlush($format_hand_suit);
+        if ($isFlush == true) {
+            $isFourPair = false;
+        } else {
+            $tmp = array_count_values($hand_numbers);
+            $isFourPair = false;
+            foreach ($tmp as $t) {
+                if ($t == 4) {
+                    $isFourPair = true;
+                }
             }
         }
 
@@ -55,17 +60,21 @@ class HandTypes
     }
 
 
-    public function isFullHouse($hand_numbers)
+    public function isFullHouse($hand_numbers, $format_hand_suit)
     {
+        $isFlush = $this->isFlush($format_hand_suit);
+        if ($isFlush == true) {
+            $isFullHouse = false;
+        } else {
+            $hand_numbers_count = count(array_unique($hand_numbers));
 
-        $hand_numbers_count = count(array_unique($hand_numbers));
-
-        $isFullHouse = false;
-        if ($hand_numbers_count == 2) {
-            $tmp = array_count_values($hand_numbers);
-            foreach ($tmp as $t) {
-                if ($t == 3) {
-                    $isFullHouse = true;
+            $isFullHouse = false;
+            if ($hand_numbers_count == 2) {
+                $tmp = array_count_values($hand_numbers);
+                foreach ($tmp as $t) {
+                    if ($t == 3) {
+                        $isFullHouse = true;
+                    }
                 }
             }
         }
@@ -127,15 +136,20 @@ class HandTypes
     }
 
 
-    public function isThreePair($hand_numbers)
+    public function isThreePair($hand_numbers, $format_hand_suit)
     {
-        $tmp = array_count_values($hand_numbers);
+        $isFlush = $this->isFlush($format_hand_suit);
+        if ($isFlush == true) {
+            $isThreePair = false;
+        } else {
+            $tmp = array_count_values($hand_numbers);
 
-        $isThreePair = false;
-        if ((count($tmp) == 3)) {
-            foreach ($tmp as $t) {
-                if ($t == 3) {
-                    $isThreePair = true;
+            $isThreePair = false;
+            if ((count($tmp) == 3)) {
+                foreach ($tmp as $t) {
+                    if ($t == 3) {
+                        $isThreePair = true;
+                    }
                 }
             }
         }
@@ -144,15 +158,20 @@ class HandTypes
     }
 
 
-    public function isTwoPair($hand_numbers)
+    public function isTwoPair($hand_numbers, $format_hand_suit)
     {
-        $tmp = array_count_values($hand_numbers);
+        $isFlush = $this->isFlush($format_hand_suit);
+        if ($isFlush == true) {
+            $isTwoPair = false;
+        } else {
+            $tmp = array_count_values($hand_numbers);
 
-        $isTwoPair = false;
-        if (count($tmp) <= 3) {
-            foreach ($tmp as $t) {
-                if ($t <= 2) {
-                    $isTwoPair = true;
+            $isTwoPair = false;
+            if (count($tmp) <= 3) {
+                foreach ($tmp as $t) {
+                    if ($t <= 2) {
+                        $isTwoPair = true;
+                    }
                 }
             }
         }
@@ -161,18 +180,20 @@ class HandTypes
     }
 
 
-    public function isPair($hand_numbers)
+    public function isPair($hand_numbers, $format_hand_suit)
     {
-        $tmp = array_count_values($hand_numbers);
+        $isFlush = $this->isFlush($format_hand_suit);
+        if ($isFlush == true) {
+            $isPair = false;
+        } else {
+            $tmp = array_count_values($hand_numbers);
 
-//        var_dump(count($tmp));
-//        die();
-
-        $isPair = false;
-        if (count($tmp) < 5) {
-            foreach ($tmp as $t) {
-                if ($t == 2) {
-                    $isPair = true;
+            $isPair = false;
+            if (count($tmp) < 5) {
+                foreach ($tmp as $t) {
+                    if ($t == 2) {
+                        $isPair = true;
+                    }
                 }
             }
         }
@@ -298,6 +319,7 @@ class HandTypes
     {
         $firstHand = $this->formatHand($hand);
 
+        $format_hand_number_straight = array();
         foreach ($firstHand as $number) {
             if ($number == 'J') {
                 $format_hand_number_straight[] = '11';
@@ -324,6 +346,51 @@ class HandTypes
         }
 
         return (int)$highest;
+    }
+
+
+    public function isHighestFlush($hand)
+    {
+        $firstHand = $this->formatHand($hand);
+
+        $format_hand_number_straight = array();
+        foreach ($firstHand as $number) {
+            if ($number == 'J') {
+                $format_hand_number_straight[] = 11;
+            } elseif ($number == 'Q') {
+                $format_hand_number_straight[] = 12;
+            } elseif ($number == 'K') {
+                $format_hand_number_straight[] = 13;
+            } elseif ($number == 'A') {
+                $format_hand_number_straight[] = 14;
+            } else {
+                $format_hand_number_straight[] = (int)$number;
+            }
+        }
+
+        return array_sum($format_hand_number_straight);
+    }
+
+    public function isHighestCard($hand)
+    {
+        $firstHand = $this->formatHand($hand);
+
+        $format_hand_number_straight = array();
+        foreach ($firstHand as $number) {
+            if ($number == 'J') {
+                $format_hand_number_straight[] = 11;
+            } elseif ($number == 'Q') {
+                $format_hand_number_straight[] = 12;
+            } elseif ($number == 'K') {
+                $format_hand_number_straight[] = 13;
+            } elseif ($number == 'A') {
+                $format_hand_number_straight[] = 14;
+            } else {
+                $format_hand_number_straight[] = (int)$number;
+            }
+        }
+
+        return max($format_hand_number_straight);
     }
 
 }

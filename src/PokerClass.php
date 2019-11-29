@@ -67,6 +67,10 @@ class PokerClass
                             $precise_rank = $hand->isHighestFullHouse($value);
                             $ranked_array[$item]['hand_strength'] = 4 - ($precise_rank / 100);
                             break;
+                        case 5:
+                            $precise_rank = $hand->isHighestFlush($value);
+                            $ranked_array[$item]['hand_strength'] = 5 - ($precise_rank / 100);
+                            break;
                         case 6:
                             $precise_rank = $hand->isHighestStraight($value);
                             $ranked_array[$item]['hand_strength'] = 6 - ($precise_rank / 100);
@@ -74,6 +78,11 @@ class PokerClass
                         case 7:
                             $precise_rank = $hand->isHighestThree($value);
                             $ranked_array[$item]['hand_strength'] = 7 - ($precise_rank / 100);
+                            break;
+
+                        case 10:
+                            $precise_rank = $hand->isHighestCard($value);
+                            $ranked_array[$item]['hand_strength'] = 10 - ($precise_rank / 100);
                             break;
 
                         default:
@@ -90,11 +99,12 @@ class PokerClass
         });
 
 
-//        var_dump($same_level_hands);
-        foreach ($ranked_array as $arr){
-            var_dump($arr['hand']);
-
-        }
+        var_dump($ranked_array);
+        die();
+//        foreach ($ranked_array as $arr){
+//            var_dump($arr['hand']);
+//
+//        }
 
         die();
 
@@ -124,11 +134,11 @@ class PokerClass
         $handType = new HandTypes();
         $isStraight = $handType->isStraight($format_hand_number);
         $isFlush = $handType->isFlush($format_hand_suit);
-        $isPair = $handType->isPair($format_hand_number);
-        $isTwoPair = $handType->isTwoPair($format_hand_number);
-        $isThreePair = $handType->isThreePair($format_hand_number);
-        $isFullHouse = $handType->isFullHouse($format_hand_number);
-        $isFourPair = $handType->isFourPair($format_hand_number);
+        $isPair = $handType->isPair($format_hand_number, $format_hand_suit);
+        $isTwoPair = $handType->isTwoPair($format_hand_number, $format_hand_suit);
+        $isThreePair = $handType->isThreePair($format_hand_number, $format_hand_suit);
+        $isFullHouse = $handType->isFullHouse($format_hand_number, $format_hand_suit);
+        $isFourPair = $handType->isFourPair($format_hand_number, $format_hand_suit);
         if ($isFourPair == true) {
             return 3;
         } elseif ($isThreePair == true) {
