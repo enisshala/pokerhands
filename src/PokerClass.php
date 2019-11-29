@@ -32,9 +32,11 @@ class PokerClass
             $i++;
         }
 
+
+        // check if there are hands on same level of strength
         $strengths = array();
         foreach ($ranked_array as $item) {
-            $strengths[] = $item['hand_strength'];
+            $strengths[] = intval($item['hand_strength']);
         }
 
         $count_hands = array_count_values($strengths);
@@ -46,25 +48,38 @@ class PokerClass
             }
         }
 
-        foreach ($ranked_array as $item => $value) {
-            if (in_array($value['hand_strength'], $same_level_hands)) {
-                $hand = new HandTypes();
-                switch ($value['hand_strength']) {
-                    case 3:
-                        $precise_rank = $hand->isHighestFour($value);
-                        $ranked_array[$item]['hand_strength'] = 3 + ($precise_rank/100);
-                        break;
-                    case 8:
-                        $precise_rank = $hand->isHighestTwoPair($value);
-                        var_dump($precise_rank);
-//                        die();
-                        break;
 
-                    default:
-                        continue;
+        // if there are hands in the same level of strength, make precision ranking and update array
+        if (count($same_level_hands) > 0) {
+            foreach ($ranked_array as $item => $value) {
+                if (in_array($value['hand_strength'], $same_level_hands)) {
+                    $hand = new HandTypes();
+                    switch ($value['hand_strength']) {
+                        case 2:
+                            $precise_rank = $hand->isHighestStraight($value);
+                            $ranked_array[$item]['hand_strength'] = 2 - ($precise_rank / 100);
+                            break;
+                        case 3:
+                            $precise_rank = $hand->isHighestFour($value);
+                            $ranked_array[$item]['hand_strength'] = 3 - ($precise_rank / 100);
+                            break;
+                        case 4:
+                            $precise_rank = $hand->isHighestFullHouse($value);
+                            $ranked_array[$item]['hand_strength'] = 4 - ($precise_rank / 100);
+                            break;
+                        case 6:
+                            $precise_rank = $hand->isHighestStraight($value);
+                            $ranked_array[$item]['hand_strength'] = 6 - ($precise_rank / 100);
+                            break;
+                        case 7:
+                            $precise_rank = $hand->isHighestThree($value);
+                            $ranked_array[$item]['hand_strength'] = 7 - ($precise_rank / 100);
+                            break;
+
+                        default:
+                            continue;
+                    }
                 }
-
-
             }
         }
 
@@ -74,8 +89,12 @@ class PokerClass
             return $a['hand_strength'] > $b['hand_strength'] ? 1 : -1;
         });
 
+
 //        var_dump($same_level_hands);
-        var_dump($ranked_array);
+        foreach ($ranked_array as $arr){
+            var_dump($arr['hand']);
+
+        }
 
         die();
 

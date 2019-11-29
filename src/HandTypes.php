@@ -107,9 +107,9 @@ class HandTypes
         sort($format_hand_number_straight);
 
         $lowestStraight = array('14', '2', '3', '4', '5');
-        $count_equals = count(array_intersect($lowestStraight, $format_hand_number));
+        $count_equals = count(array_intersect($lowestStraight, $format_hand_number_straight));
 
-        if ($count_equals == 5){
+        if ($count_equals == 5) {
             $isStraight = true;
         } else {
             $isStraight = false;
@@ -204,7 +204,8 @@ class HandTypes
     }
 
 
-    public function formatHand($hand){
+    public function formatHand($hand)
+    {
         $hand_array = explode(" ", $hand['hand']);
         $format_hand_number = array();
         $format_hand_suit = array();
@@ -218,7 +219,8 @@ class HandTypes
         return $format_hand_number;
     }
 
-    public function isHighestFour($hand){
+    public function isHighestFour($hand)
+    {
         $firstHand = $this->formatHand($hand);
 
         $tmp1 = array_count_values($firstHand);
@@ -242,13 +244,86 @@ class HandTypes
     }
 
 
-    public function isHighestTwoPair($hand)
+    public function isHighestFullHouse($hand)
     {
         $firstHand = $this->formatHand($hand);
 
-        $tmp = array_count_values($firstHand);
-//        var_dump($tmp);
-        return $tmp;
+        $tmp1 = array_count_values($firstHand);
+        foreach ($tmp1 as $key => $value) {
+            if ($value == 3) {
+                if ($key == "A") {
+                    $highest = 14;
+                } elseif ($key == "K") {
+                    $highest = 13;
+                } elseif ($key == "Q") {
+                    $highest = 12;
+                } elseif ($key == "J") {
+                    $highest = 11;
+                } else {
+                    $highest = (int)$key;
+                }
+            }
+        }
+
+        return $highest;
+    }
+
+
+    public function isHighestThree($hand)
+    {
+        $firstHand = $this->formatHand($hand);
+
+        $tmp1 = array_count_values($firstHand);
+        foreach ($tmp1 as $key => $value) {
+            if ($value == 3) {
+                if ($key == "A") {
+                    $highest = 14;
+                } elseif ($key == "K") {
+                    $highest = 13;
+                } elseif ($key == "Q") {
+                    $highest = 12;
+                } elseif ($key == "J") {
+                    $highest = 11;
+                } else {
+                    $highest = (int)$key;
+                }
+            }
+        }
+
+        return $highest;
+    }
+
+
+    public function isHighestStraight($hand)
+    {
+        $firstHand = $this->formatHand($hand);
+
+        foreach ($firstHand as $number) {
+            if ($number == 'J') {
+                $format_hand_number_straight[] = '11';
+            } elseif ($number == 'Q') {
+                $format_hand_number_straight[] = '12';
+            } elseif ($number == 'K') {
+                $format_hand_number_straight[] = '13';
+            } elseif ($number == 'A') {
+                $format_hand_number_straight[] = '14';
+            } else {
+                $format_hand_number_straight[] = $number;
+            }
+        }
+
+        sort($format_hand_number_straight);
+
+        $lowestStraight = array('14', '2', '3', '4', '5');
+        $count_equals = count(array_intersect($lowestStraight, $format_hand_number_straight));
+
+        if ($count_equals == 5) {
+            $highest = 5;
+        } else {
+            $highest = max($format_hand_number_straight);
+        }
+
+        return (int)$highest;
     }
 
 }
