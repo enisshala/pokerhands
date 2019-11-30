@@ -307,6 +307,7 @@ class PreciseStrength
             }
         }
 
-        return array_sum($format_hand_number_straight);
+        rsort($format_hand_number_straight);
+        return (int)implode($format_hand_number_straight);
     }
 }

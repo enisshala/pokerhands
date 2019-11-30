@@ -89,7 +89,7 @@ class PokerClass
                             break;
                         case 10:
                             $precise_rank = $hand->isHighestCard($value);
-                            $ranked_array[$item]['hand_strength'] = 10 - ($precise_rank / 1000);
+                            $ranked_array[$item]['hand_strength'] = 10 - ($precise_rank / 1000000);
                             break;
 
                         default:
