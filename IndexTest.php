@@ -13,9 +13,8 @@ class IndexTest
         $hands = new PokerClass();
         $sorted_hands = $hands->sortHands($file_path);
 
-
-        var_dump($sorted_hands);
-
+        foreach ($sorted_hands as $hand){
+            var_dump($hand);
+        }
     }
-
 }

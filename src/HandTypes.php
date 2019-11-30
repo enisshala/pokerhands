@@ -10,10 +10,13 @@ class HandTypes
      */
     public function __construct()
     {
-
     }
 
-
+    /** Check if is royal flush
+     * @param $format_hand_number
+     * @param $format_hand_suit
+     * @return bool
+     */
     public function isRoyalFlush($format_hand_number, $format_hand_suit)
     {
         $royal = array('10', 'J', 'Q', 'K', 'A');
@@ -27,6 +30,11 @@ class HandTypes
     }
 
 
+    /** check if is straight flush
+     * @param $format_hand_number
+     * @param $format_hand_suit
+     * @return bool
+     */
     public function isStraightFlush($format_hand_number, $format_hand_suit)
     {
         $isStraight = $this->isStraight($format_hand_number);
@@ -41,6 +49,11 @@ class HandTypes
     }
 
 
+    /** check if is four pair
+     * @param $hand_numbers
+     * @param $format_hand_suit
+     * @return bool
+     */
     public function isFourPair($hand_numbers, $format_hand_suit)
     {
         $isFlush = $this->isFlush($format_hand_suit);
@@ -60,6 +73,11 @@ class HandTypes
     }
 
 
+    /** check if is full house
+     * @param $hand_numbers
+     * @param $format_hand_suit
+     * @return bool
+     */
     public function isFullHouse($hand_numbers, $format_hand_suit)
     {
         $isFlush = $this->isFlush($format_hand_suit);
@@ -83,6 +101,10 @@ class HandTypes
     }
 
 
+    /** check if is flush
+     * @param $format_hand_suit
+     * @return bool
+     */
     public function isFlush($format_hand_suit)
     {
         $counts_suits = count(array_unique($format_hand_suit));
@@ -96,6 +118,10 @@ class HandTypes
     }
 
 
+    /** check if is staight
+     * @param $format_hand_number
+     * @return bool
+     */
     public function isStraight($format_hand_number)
     {
         $format_hand_number_straight = array();
@@ -136,6 +162,11 @@ class HandTypes
     }
 
 
+    /** check if is three of a kind
+     * @param $hand_numbers
+     * @param $format_hand_suit
+     * @return bool
+     */
     public function isThreePair($hand_numbers, $format_hand_suit)
     {
         $isFlush = $this->isFlush($format_hand_suit);
@@ -157,7 +188,11 @@ class HandTypes
         return $isThreePair;
     }
 
-
+    /** check if is two pair
+     * @param $hand_numbers
+     * @param $format_hand_suit
+     * @return bool
+     */
     public function isTwoPair($hand_numbers, $format_hand_suit)
     {
         $isFlush = $this->isFlush($format_hand_suit);
@@ -180,6 +215,11 @@ class HandTypes
     }
 
 
+    /** check if is pair
+     * @param $hand_numbers
+     * @param $format_hand_suit
+     * @return bool
+     */
     public function isPair($hand_numbers, $format_hand_suit)
     {
         $isFlush = $this->isFlush($format_hand_suit);
@@ -202,195 +242,25 @@ class HandTypes
     }
 
 
-    public function isHighCard($hand_numbers)
-    {
-        $formatted_hands = array();
-        foreach ($hand_numbers as $hand) {
-            if ($hand == "A") {
-                $formatted_hands[] = '14';
-            } elseif ($hand == "K") {
-                $formatted_hands[] = '13';
-            } elseif ($hand == "Q") {
-                $formatted_hands[] = '12';
-            } elseif ($hand == "J") {
-                $formatted_hands[] = '11';
-            } else {
-                $formatted_hands[] = $hand;
-            }
-        }
-        rsort($formatted_hands);
-
-        return $formatted_hands[0];
-
-    }
-
-
-    public function formatHand($hand)
-    {
-        $hand_array = explode(" ", $hand['hand']);
-        $format_hand_number = array();
-        $format_hand_suit = array();
-        foreach ($hand_array as $hand) {
-            $format = str_replace("\"", "", json_encode($hand));
-            $formatted = str_replace("\\r", "", $format);
-            $format_hand_number[] = explode("\\", $formatted, 2)[0];
-            $format_hand_suit[] = explode("\\", $formatted, 2)[1];
-        }
-
-        return $format_hand_number;
-    }
-
-    public function isHighestFour($hand)
-    {
-        $firstHand = $this->formatHand($hand);
-
-        $tmp1 = array_count_values($firstHand);
-        foreach ($tmp1 as $key => $value) {
-            if ($value == 4) {
-                if ($key == "A") {
-                    $highest = 14;
-                } elseif ($key == "K") {
-                    $highest = 13;
-                } elseif ($key == "Q") {
-                    $highest = 12;
-                } elseif ($key == "J") {
-                    $highest = 11;
-                } else {
-                    $highest = (int)$key;
-                }
-            }
-        }
-        return $highest;
-
-    }
-
-
-    public function isHighestFullHouse($hand)
-    {
-        $firstHand = $this->formatHand($hand);
-
-        $tmp1 = array_count_values($firstHand);
-        foreach ($tmp1 as $key => $value) {
-            if ($value == 3) {
-                if ($key == "A") {
-                    $highest = 14;
-                } elseif ($key == "K") {
-                    $highest = 13;
-                } elseif ($key == "Q") {
-                    $highest = 12;
-                } elseif ($key == "J") {
-                    $highest = 11;
-                } else {
-                    $highest = (int)$key;
-                }
-            }
-        }
-
-        return $highest;
-    }
-
-
-    public function isHighestThree($hand)
-    {
-        $firstHand = $this->formatHand($hand);
-
-        $tmp1 = array_count_values($firstHand);
-        foreach ($tmp1 as $key => $value) {
-            if ($value == 3) {
-                if ($key == "A") {
-                    $highest = 14;
-                } elseif ($key == "K") {
-                    $highest = 13;
-                } elseif ($key == "Q") {
-                    $highest = 12;
-                } elseif ($key == "J") {
-                    $highest = 11;
-                } else {
-                    $highest = (int)$key;
-                }
-            }
-        }
-
-        return $highest;
-    }
-
-
-    public function isHighestStraight($hand)
-    {
-        $firstHand = $this->formatHand($hand);
-
-        $format_hand_number_straight = array();
-        foreach ($firstHand as $number) {
-            if ($number == 'J') {
-                $format_hand_number_straight[] = '11';
-            } elseif ($number == 'Q') {
-                $format_hand_number_straight[] = '12';
-            } elseif ($number == 'K') {
-                $format_hand_number_straight[] = '13';
-            } elseif ($number == 'A') {
-                $format_hand_number_straight[] = '14';
-            } else {
-                $format_hand_number_straight[] = $number;
-            }
-        }
-
-        sort($format_hand_number_straight);
-
-        $lowestStraight = array('14', '2', '3', '4', '5');
-        $count_equals = count(array_intersect($lowestStraight, $format_hand_number_straight));
-
-        if ($count_equals == 5) {
-            $highest = 5;
-        } else {
-            $highest = max($format_hand_number_straight);
-        }
-
-        return (int)$highest;
-    }
-
-
-    public function isHighestFlush($hand)
-    {
-        $firstHand = $this->formatHand($hand);
-
-        $format_hand_number_straight = array();
-        foreach ($firstHand as $number) {
-            if ($number == 'J') {
-                $format_hand_number_straight[] = 11;
-            } elseif ($number == 'Q') {
-                $format_hand_number_straight[] = 12;
-            } elseif ($number == 'K') {
-                $format_hand_number_straight[] = 13;
-            } elseif ($number == 'A') {
-                $format_hand_number_straight[] = 14;
-            } else {
-                $format_hand_number_straight[] = (int)$number;
-            }
-        }
-
-        return array_sum($format_hand_number_straight);
-    }
-
-    public function isHighestCard($hand)
-    {
-        $firstHand = $this->formatHand($hand);
-
-        $format_hand_number_straight = array();
-        foreach ($firstHand as $number) {
-            if ($number == 'J') {
-                $format_hand_number_straight[] = 11;
-            } elseif ($number == 'Q') {
-                $format_hand_number_straight[] = 12;
-            } elseif ($number == 'K') {
-                $format_hand_number_straight[] = 13;
-            } elseif ($number == 'A') {
-                $format_hand_number_straight[] = 14;
-            } else {
-                $format_hand_number_straight[] = (int)$number;
-            }
-        }
-
-        return max($format_hand_number_straight);
-    }
+//    public function isHighCard($hand_numbers)
+//    {
+//        $formatted_hands = array();
+//        foreach ($hand_numbers as $hand) {
+//            if ($hand == "A") {
+//                $formatted_hands[] = '14';
+//            } elseif ($hand == "K") {
+//                $formatted_hands[] = '13';
+//            } elseif ($hand == "Q") {
+//                $formatted_hands[] = '12';
+//            } elseif ($hand == "J") {
+//                $formatted_hands[] = '11';
+//            } else {
+//                $formatted_hands[] = $hand;
+//            }
+//        }
+//        rsort($formatted_hands);
+//
+//        return $formatted_hands[0];
+//    }
 
 }

@@ -3,6 +3,7 @@
 namespace enisshala\pokerhands;
 
 use enisshala\pokerhands\HandTypes;
+use enisshala\pokerhands\PreciseStrength;
 
 class PokerClass
 {
@@ -48,12 +49,11 @@ class PokerClass
             }
         }
 
-
         // if there are hands in the same level of strength, make precision ranking and update array
         if (count($same_level_hands) > 0) {
             foreach ($ranked_array as $item => $value) {
                 if (in_array($value['hand_strength'], $same_level_hands)) {
-                    $hand = new HandTypes();
+                    $hand = new PreciseStrength();
                     switch ($value['hand_strength']) {
                         case 2:
                             $precise_rank = $hand->isHighestStraight($value);
@@ -73,16 +73,23 @@ class PokerClass
                             break;
                         case 6:
                             $precise_rank = $hand->isHighestStraight($value);
-                            $ranked_array[$item]['hand_strength'] = 6 - ($precise_rank / 100);
+                            $ranked_array[$item]['hand_strength'] = 6 - ($precise_rank / 1000);
                             break;
                         case 7:
                             $precise_rank = $hand->isHighestThree($value);
-                            $ranked_array[$item]['hand_strength'] = 7 - ($precise_rank / 100);
+                            $ranked_array[$item]['hand_strength'] = 7 - ($precise_rank / 1000);
                             break;
-
+                        case 8:
+                            $precise_rank = $hand->isHighestTwo($value);
+                            $ranked_array[$item]['hand_strength'] = 8 - ($precise_rank / 1000);
+                            break;
+                        case 9:
+                            $precise_rank = $hand->isHighestPair($value);
+                            $ranked_array[$item]['hand_strength'] = 9 - ($precise_rank / 1000);
+                            break;
                         case 10:
                             $precise_rank = $hand->isHighestCard($value);
-                            $ranked_array[$item]['hand_strength'] = 10 - ($precise_rank / 100);
+                            $ranked_array[$item]['hand_strength'] = 10 - ($precise_rank / 1000);
                             break;
 
                         default:
@@ -92,22 +99,18 @@ class PokerClass
             }
         }
 
-
         //sort based on strength parameter in array
         usort($ranked_array, function ($a, $b) {
             return $a['hand_strength'] > $b['hand_strength'] ? 1 : -1;
         });
 
+        //sort only hands
+        $final_array = array();
+        foreach ($ranked_array as $arr) {
+            $final_array[] = $arr['hand'];
+        }
 
-        var_dump($ranked_array);
-        die();
-//        foreach ($ranked_array as $arr){
-//            var_dump($arr['hand']);
-//
-//        }
-
-        die();
-
+        return $final_array;
     }
 
 
@@ -122,15 +125,10 @@ class PokerClass
 
     public function checkStrength($hand)
     {
-        $hand_array = explode(" ", $hand);
-        $format_hand_number = array();
-        $format_hand_suit = array();
-        foreach ($hand_array as $hand) {
-            $format = str_replace("\"", "", json_encode($hand));
-            $formatted = str_replace("\\r", "", $format);
-            $format_hand_number[] = explode("\\", $formatted, 2)[0];
-            $format_hand_suit[] = explode("\\", $formatted, 2)[1];
-        }
+        $format_hand = new PreciseStrength();
+        $format_hand_number = $format_hand->formatHand($hand);
+        $format_hand_suit = $format_hand->formatHandSuit($hand);
+
         $handType = new HandTypes();
         $isStraight = $handType->isStraight($format_hand_number);
         $isFlush = $handType->isFlush($format_hand_suit);
@@ -164,8 +162,8 @@ class PokerClass
         } elseif ($isFlush == true) {
             return 5;
         } else {
-//            $isHighCard = $handType->isHighCard($format_hand_number);
             return 10;
         }
     }
+
 }
