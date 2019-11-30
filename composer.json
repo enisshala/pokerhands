@@ -31,5 +31,12 @@
         "psr-4": {
             "enisshala\\pokerhands\\Test\\": "tests"
         }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "extra": {
+        "branch-alias": {
+            "dev-master": "1.0-dev"
+        }
     }
 }
